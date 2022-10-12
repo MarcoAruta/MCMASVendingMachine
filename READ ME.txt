@@ -1,0 +1,23 @@
+Algorithms for Branching Temporal Logic programs and reactive programs.
+In this project I used a classic example to differentiate closed systems
+from open systems: the vending machine problem. While a finite-state closed system
+is modelled by programs, a finite-state open system is modelled by reactive programs
+(aka modules). A module is a program with a partition of the states into two sets:
+- system states: locations where the system makes a transition 
+- environment states: locations where the environment makes a transition
+So, the vending machine for Open Systems has three system states (boil, tea, and coffee)
+and a single environment state (choose). When the vending machine is in the system
+state boil, it's possible to know what its next states are. It can either stay in the
+state boil or move to the state choose. In contrast, when it's in the environment
+state choose, there is no certainty with respect to the environment and it's not possible
+to be sure that both tea and coffee are possible next states. For example, it might be
+that for some users of the machine, coffee is not a desirable option. The vending machine
+for Closed Systems ignores the states partition to system and environment states.
+Both algorithms answer to a simple question: Is it always possible for the vending machine
+to "eventually" serve tea? This is equal to: is it true that P satisfies CTL formula AGEFtea?
+A nondeterministic choice as the first algorithm will return Yes. 
+Anyway, in the second algorithm the expected answer is No, as if the environment always
+choose coffee over tea, tea will never be served! 
+However, it's impossible to distinguish between Open System and Closed System using modern
+tools as they consider the vending machine as a program returning Yes.
+ 

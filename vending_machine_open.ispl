@@ -1,0 +1,71 @@
+--l'Environment corrisponde all'utente in un sistema aperto
+--purtroppo nessun tool riesce a distinguere tra sistemi aperti e chiusi, quindi anche in questo caso le formule risultano TRUE
+Agent Environment
+	Vars:
+		vm_state: {Boil, Choose, Tea, Coffee};
+	end Vars
+	Actions = {boil_repeatedly, pick, serve_tea, serve_coffee, wait};
+	
+	Protocol:
+		vm_state=Boil: {boil_repeatedly, pick};
+		vm_state=Tea: {serve_tea};
+		vm_state=Choose: {wait};
+		vm_state=Coffee: {serve_coffee};
+	end Protocol
+	
+	Evolution:
+		vm_state=Boil  if ((Action=boil_repeatedly) or (Action=serve_tea) or (Action=serve_coffee));
+		vm_state=Choose if (Action= pick);
+		vm_state=Tea if (cliente.Action=choose_tea);
+		vm_state=Coffee if (cliente.Action=choose_coffee);
+	end Evolution
+end Agent
+
+Agent cliente
+	Vars:
+		is_choose: {Tr,Fa};
+	end Vars
+	
+	Actions = {choose_tea, choose_coffee, nothing};
+	
+	Protocol:
+		is_choose=Tr: {choose_tea, choose_coffee};
+		is_choose=Fa: {nothing};
+	end Protocol
+	
+	Evolution:
+		is_choose=Fa if (
+			(Environment.Action=boil_repeatedly) or (Environment.Action=serve_tea) or (Environment.Action=serve_coffee)
+			or Action=choose_tea or Action=choose_coffee
+						);
+		
+		is_choose=Tr if Environment.Action=pick;
+	end Evolution
+
+end Agent
+
+
+
+Evaluation
+	Boil if Environment.vm_state=Boil;
+	choose if Environment.vm_state=Choose;
+	Tea if Environment.vm_state=Tea;
+	Coffee if Environment.vm_state=Coffee;
+end Evaluation
+
+InitStates
+	( 
+	(Environment.vm_state=Boil and cliente.is_choose=Fa)
+	);
+end InitStates
+
+
+Fairness
+
+end Fairness
+
+Formulae
+	-- modello aperto
+	AG(EF(Tea));
+	AG(EF(Coffee));
+end Formulae
